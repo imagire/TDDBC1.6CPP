@@ -39,6 +39,19 @@ public:
 		return -1;
 	}
 
+	int remove(int key){
+		for(int i = 0; i < count; i++){
+			if(values[i].key == key){
+				values[i].key = values[count-1].key;
+				values[i].value = values[count-1].value;
+				count--;
+				return 0;
+			}
+		}
+
+		return -1;
+	}
+
 	const KeyValue* dump(int &n) {
 		n = count;
 		return reinterpret_cast<const KeyValue*>(&values[0]);
@@ -84,6 +97,39 @@ TEST(Dump, keys)
 
 	ASSERT_EQ(1, n2);
 	ASSERT_EQ(1, n3);
+}
+
+TEST(Delete, delete1)
+{
+	CKeyValue kv;
+
+	kv.put(1,2);
+
+	int ret0 = kv.remove(0);
+	ASSERT_NE(0, ret0);
+
+	int ret = kv.remove(1);
+	ASSERT_EQ(0, ret);
+}
+
+TEST(Delete, delete2)
+{
+	CKeyValue kv;
+
+	kv.put(1,2);
+	kv.put(2,4);
+
+	int ret0 = kv.remove(1);
+	ASSERT_EQ(0, ret0);
+	ret0 = kv.remove(1);
+	ASSERT_NE(0, ret0);
+
+	int ret = kv.remove(2);
+	ASSERT_EQ(0, ret);
+
+	int n;
+	const KeyValue *p = kv.dump(n);
+	ASSERT_EQ(0, n);
 }
 
 int main(int argc, char* argv[])
