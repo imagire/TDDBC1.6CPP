@@ -9,6 +9,8 @@ class CKeyValue{
 private:
 	int m_count;
 	KeyValue* values;
+
+
 public:
 	CKeyValue():m_count(0){
 		values = NULL;
@@ -19,7 +21,21 @@ public:
 			delete[] (values);
 	}
 
+	KeyValue *find(int key){
+		for(int i = 0; i < m_count; i++){
+			if(values[i].key == key) return &values[i];
+		}
+		return NULL;
+	}
+
 	void put(int key, int value) {
+		// ‚·‚Å‚Ékey‚ª‘¶Ý‚µ‚Ä‚¢‚½‚çA’Ç‰Á‚µ‚È‚¢‚ÅAvalue‚ðã‘‚«
+		KeyValue *p = find(key);
+		if(NULL != p){
+				p->value = value;
+				return;
+		}
+
 		KeyValue* tmp;
 		tmp = new KeyValue[m_count+1];
 		memcpy(tmp, values, sizeof(KeyValue)*m_count);
@@ -32,11 +48,9 @@ public:
 	}
 
 	int get(int key) {
-		for(int i = 0; i < m_count; i++){
-			if(values[i].key == key) return values[i].value;
-		}
+		KeyValue *p = find(key);
 
-		return -1;
+		return (p == NULL) ? -1 : p->value;
 	}
 
 	int remove(int key){
@@ -86,6 +100,61 @@ TEST(GetValue, key3)
 	kv.put(3,4);
     ASSERT_EQ(3, kv.get(2));
     ASSERT_EQ(4, kv.get(3));
+}
+
+TEST(put, Override)
+{
+	CKeyValue kv;
+
+	kv.put(1,2);
+	kv.put(1,1);
+
+	ASSERT_EQ(1, kv.get(1));
+}
+
+TEST(put, CountInOverride)
+{
+	CKeyValue kv;
+
+	kv.put(1,2);
+	kv.put(1,1);
+
+	ASSERT_EQ(1, kv.count());
+}
+
+TEST(put, OverrideAfterOtherKeys)
+{
+	CKeyValue kv;
+
+	kv.put(1,2);
+	kv.put(2,3);
+	kv.put(4,5);
+	kv.put(6,7);
+	kv.put(1,8);
+
+	ASSERT_EQ(8, kv.get(1));
+	ASSERT_EQ(3, kv.get(2));
+	ASSERT_EQ(5, kv.get(4));
+	ASSERT_EQ(7, kv.get(6));
+}
+
+TEST(find, NotPut)
+{
+	CKeyValue kv;
+
+	ASSERT_EQ(NULL, kv.find(0));
+}
+
+TEST(find, Simple)
+{
+	CKeyValue kv;
+
+	kv.put(1, 2);
+
+	KeyValue *p = kv.find(1);
+
+	EXPECT_EQ(1, p->key);
+	ASSERT_EQ(2, p->value);
 }
 
 TEST(Dump, DumpCount)
@@ -205,6 +274,9 @@ TEST(Delete, MultipleItem)
 
 	ASSERT_EQ(0, kv.count());
 }
+
+
+
 
 int main(int argc, char* argv[])
 {
