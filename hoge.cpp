@@ -47,6 +47,13 @@ public:
 		m_count++;
 	}
 
+	void puts(const KeyValue* v, int n) {
+		for(int i=0; i < n; i++){
+			put((v+i)->key, (v+i)->value);
+		}
+	}
+
+
 	int get(int key) {
 		KeyValue *p = find(key);
 
@@ -136,6 +143,66 @@ TEST(put, OverrideAfterOtherKeys)
 	ASSERT_EQ(3, kv.get(2));
 	ASSERT_EQ(5, kv.get(4));
 	ASSERT_EQ(7, kv.get(6));
+}
+
+TEST(puts, Simple)
+{
+	CKeyValue kv;
+
+	KeyValue v[]={
+		{1,2},
+		{3,4}
+	};
+
+	kv.puts(v, 2);
+
+	ASSERT_EQ(2, kv.count());
+
+	ASSERT_EQ(2, kv.get(1));
+	ASSERT_EQ(4, kv.get(3));
+}
+
+TEST(puts, DuplicatedKey)
+{
+	CKeyValue kv;
+
+	KeyValue v[]={
+		{1,2},
+		{1,4}
+	};
+
+	kv.puts(v, 2);
+
+	ASSERT_EQ(1, kv.count());
+
+	ASSERT_EQ(4, kv.get(1));
+}
+
+TEST(puts, OverWrite)
+{
+	CKeyValue kv;
+
+	KeyValue v[]={
+		{1,2},
+		{3,4},
+		{1,4}
+	};
+
+	kv.put(1, 1);
+	kv.puts(v, 3);
+
+	ASSERT_EQ(2, kv.count());
+
+	ASSERT_EQ(4, kv.get(1));
+}
+
+TEST(puts, SetNull)
+{
+	CKeyValue kv;
+
+	kv.puts(NULL, 0);
+
+	ASSERT_EQ(0, kv.count());
 }
 
 TEST(find, NotPut)
