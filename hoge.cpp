@@ -88,7 +88,7 @@ public:
 TEST(GetValue, ValueNotSet)
 {
 	CKeyValue kv;
-    ASSERT_EQ(-1, kv.get(2));
+    EXPECT_EQ(-1, kv.get(2));
 }
 
 
@@ -96,7 +96,7 @@ TEST(GetValue, key2)
 {
 	CKeyValue kv;
 	kv.put(2,2);
-    ASSERT_EQ(2, kv.get(2));
+    EXPECT_EQ(2, kv.get(2));
 }
 
 
@@ -105,8 +105,8 @@ TEST(GetValue, key3)
 	CKeyValue kv;
 	kv.put(2,3);
 	kv.put(3,4);
-    ASSERT_EQ(3, kv.get(2));
-    ASSERT_EQ(4, kv.get(3));
+    EXPECT_EQ(3, kv.get(2));
+    EXPECT_EQ(4, kv.get(3));
 }
 
 TEST(put, Override)
@@ -116,7 +116,7 @@ TEST(put, Override)
 	kv.put(1,2);
 	kv.put(1,1);
 
-	ASSERT_EQ(1, kv.get(1));
+	EXPECT_EQ(1, kv.get(1));
 }
 
 TEST(put, CountInOverride)
@@ -126,7 +126,7 @@ TEST(put, CountInOverride)
 	kv.put(1,2);
 	kv.put(1,1);
 
-	ASSERT_EQ(1, kv.count());
+	EXPECT_EQ(1, kv.count());
 }
 
 TEST(put, OverrideAfterOtherKeys)
@@ -139,10 +139,10 @@ TEST(put, OverrideAfterOtherKeys)
 	kv.put(6,7);
 	kv.put(1,8);
 
-	ASSERT_EQ(8, kv.get(1));
-	ASSERT_EQ(3, kv.get(2));
-	ASSERT_EQ(5, kv.get(4));
-	ASSERT_EQ(7, kv.get(6));
+	EXPECT_EQ(8, kv.get(1));
+	EXPECT_EQ(3, kv.get(2));
+	EXPECT_EQ(5, kv.get(4));
+	EXPECT_EQ(7, kv.get(6));
 }
 
 TEST(puts, Simple)
@@ -156,10 +156,10 @@ TEST(puts, Simple)
 
 	kv.puts(v, 2);
 
-	ASSERT_EQ(2, kv.count());
+	EXPECT_EQ(2, kv.count());
 
-	ASSERT_EQ(2, kv.get(1));
-	ASSERT_EQ(4, kv.get(3));
+	EXPECT_EQ(2, kv.get(1));
+	EXPECT_EQ(4, kv.get(3));
 }
 
 TEST(puts, DuplicatedKey)
@@ -173,9 +173,9 @@ TEST(puts, DuplicatedKey)
 
 	kv.puts(v, 2);
 
-	ASSERT_EQ(1, kv.count());
+	EXPECT_EQ(1, kv.count());
 
-	ASSERT_EQ(4, kv.get(1));
+	EXPECT_EQ(4, kv.get(1));
 }
 
 TEST(puts, OverWrite)
@@ -191,9 +191,9 @@ TEST(puts, OverWrite)
 	kv.put(1, 1);
 	kv.puts(v, 3);
 
-	ASSERT_EQ(2, kv.count());
+	EXPECT_EQ(2, kv.count());
 
-	ASSERT_EQ(4, kv.get(1));
+	EXPECT_EQ(4, kv.get(1));
 }
 
 TEST(puts, SetNull)
@@ -202,14 +202,14 @@ TEST(puts, SetNull)
 
 	kv.puts(NULL, 0);
 
-	ASSERT_EQ(0, kv.count());
+	EXPECT_EQ(0, kv.count());
 }
 
 TEST(find, NotPut)
 {
 	CKeyValue kv;
 
-	ASSERT_EQ(NULL, kv.find(0));
+	EXPECT_EQ(NULL, kv.find(0));
 }
 
 TEST(find, Simple)
@@ -221,7 +221,7 @@ TEST(find, Simple)
 	KeyValue *p = kv.find(1);
 
 	EXPECT_EQ(1, p->key);
-	ASSERT_EQ(2, p->value);
+	EXPECT_EQ(2, p->value);
 }
 
 TEST(Dump, DumpCount)
@@ -232,13 +232,13 @@ TEST(Dump, DumpCount)
 	const KeyValue *v;
 	
 	n = kv.dump(v);
-	ASSERT_EQ(0, n);
+	EXPECT_EQ(0, n);
 
 	kv.put(2,3);
 	kv.put(3,4);
 
 	n = kv.dump(v);
-	ASSERT_EQ(2, n);
+	EXPECT_EQ(2, n);
 }
 
 TEST(Dump, DumpValue)
@@ -261,7 +261,7 @@ TEST(Dump, DumpValue)
 	}
 
 	EXPECT_EQ(1, n2);
-	ASSERT_EQ(1, n3);
+	EXPECT_EQ(1, n3);
 }
 
 
@@ -271,7 +271,7 @@ TEST(Delete, SimpleDelete)
 
 	kv.put(1,2);
 	int ret = kv.remove(1);
-	ASSERT_EQ(0, ret);
+	EXPECT_EQ(0, ret);
 }
 
 
@@ -292,7 +292,7 @@ TEST(GetCount, NotSet) {
 	CKeyValue kv;
 
 	ret = kv.count();
-	ASSERT_EQ(0, ret);
+	EXPECT_EQ(0, ret);
 }
 
 
@@ -304,7 +304,7 @@ TEST(GetCount, SimpleReturn) {
 	kv.put(1,2);
 
 	ret = kv.count();
-	ASSERT_EQ(1, ret);
+	EXPECT_EQ(1, ret);
 }
 
 
@@ -317,7 +317,7 @@ TEST(Delete, DeleteDeletedKey)
 	kv.put(1,2);
 
 	ret0 = kv.remove(1);
-	ASSERT_EQ(0, ret0);
+	EXPECT_EQ(0, ret0);
 
 	ret0 = kv.remove(1);
 	ASSERT_NE(0, ret0);
@@ -334,12 +334,12 @@ TEST(Delete, MultipleItem)
 	int ret;
 		
 	ret = kv.remove(1);
-	ASSERT_EQ(0, ret);
+	EXPECT_EQ(0, ret);
 
 	ret = kv.remove(2);
-	ASSERT_EQ(0, ret);
+	EXPECT_EQ(0, ret);
 
-	ASSERT_EQ(0, kv.count());
+	EXPECT_EQ(0, kv.count());
 }
 
 
